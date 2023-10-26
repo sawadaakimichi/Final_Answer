@@ -3,9 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
+# ユーザーエージェント文字列
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.57"
+
 #グルナビのurl
 url="https://r.gnavi.co.jp/"
-res = requests.get(url)
+#リクエストを送信
+headers = {'User-Agent': user_agent}
+
+res = requests.get(url,headers=headers)
 soup=BeautifulSoup(res.text,'html.parser')
 url_list=[]
 for x in range(1,4):
@@ -37,6 +43,7 @@ for x in url_list:
 #urlを１つずつ調べる    
     for y in restaurant_link_list:
         url=y
+        time.sleep(3)
         res= requests.get(url)
         res.encoding = res.apparent_encoding
         soup=BeautifulSoup(res.text,'html.parser')
@@ -73,7 +80,7 @@ for x in url_list:
         #店の情報のリスト
         Big_list.append(shop_list)
 #データフレイム
-df=pd.DataFrame(Big_list,columns=['name','phone_number','mail','prefecture','city','block','building_name','url','SSL'])
+df=pd.DataFrame(Big_list,columns=['店舗名','電話番号','メールアドレス','都道府県','市区町村','番地','建物名','URL','SSL'])
 
 df_50=df.head(50)
 #csvfile 

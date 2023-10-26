@@ -1,12 +1,22 @@
 import pandas as pd
 import re
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-driver = webdriver.Chrome()
-driver.implicitly_wait(4)
+# ユーザーエージェントを指定
+options = Options()
+options.add_argument("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.57")
+
+# Chromeドライバーを作成
+driver = webdriver.Chrome(options=options)
+
+
+driver.implicitly_wait(10)
 
 
 #店舗検索一覧の１ページを開く
@@ -81,8 +91,9 @@ for p in range(0,3):
     #次のページに行くボタン    
     next_button = driver.find_element(By.CLASS_NAME,"style_nextIcon__M_Me_")
     next_button.click()  
+driver.quit()
 #データフレームに      
-df=pd.DataFrame(BIG_LIST,columns=['name','phone_number','mail','prefecture','city','block','building_name','url','SSL'])
+df=pd.DataFrame(BIG_LIST,columns=['店舗名','電話番号','メールアドレス','都道府県','市区町村','番地','建物名','URL','SSL'])
 df_50=df.head(50)  
 csv_filename='1-2.csv'
 df_50.to_csv(csv_filename, encoding='utf-8-sig', index=False,sep=',')  # index=Falseでインデックスを保存しない
